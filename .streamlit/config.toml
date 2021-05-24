@@ -3,3 +3,5 @@ base="light"
 primaryColor="#1c9cc4"
 secondaryBackgroundColor="#d8ebfb"
 textColor="#1b4482"
+font="monospace"
+
