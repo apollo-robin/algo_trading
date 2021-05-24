@@ -91,7 +91,7 @@ def start_dashboard(state):
         #Financials
         with st.beta_expander("Financials"):
             bs = st.checkbox("Balance Sheet", key =121)
-            pnl = st.chechkbox("Income Statement", key = 14234)
+            pnl = st.checkbox("Income Statement", key = 14234)
         # Algo Selection        
         with st.beta_expander("Trading Strategy"):
             strategy = st.selectbox("", ('None','44-MA','MA Crossover','MACD Crossover','RSI Strategy'))
