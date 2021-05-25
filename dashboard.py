@@ -13,6 +13,7 @@ import pandas as pd
 from google.cloud import firestore
 from google.oauth2 import service_account
 import json
+import qr
 
 
 def start_dashboard(state):
@@ -29,9 +30,11 @@ def start_dashboard(state):
         if data.exists:
             return True
         else:
-            return False
+            return False     
     
-        
+    upgrade = 0 
+    prem_page = st.empty()
+    
     #Laying out the page
     layout = st.empty()
     signals = st.empty()
@@ -39,6 +42,7 @@ def start_dashboard(state):
     with layout.beta_container():   
         msgs = st.empty()
         chart_area = st.empty()
+        fin_area = st.empty()
         orders = st.empty()
     
     with navbar.beta_container():
@@ -66,7 +70,7 @@ def start_dashboard(state):
             interval = right.selectbox("Interval", ('1d','1m','2m','5m','15m','30m','60m','1d','5d','1wk','1mo','3mo'), key = 3)                          
             #Charting type for share prices
             chart_type = st.selectbox("Chart", ("Candlestick","Line")) 
-            #plotted = st.form_submit_button('Plot')  
+            
         # Trace Selection        
         with st.beta_expander("Indicators"):
             traces = st.multiselect('', ("Short Moving Average","Long Moving Average","Exponential Moving Average","MACD","MACD Signal", "RSI"))
@@ -90,22 +94,28 @@ def start_dashboard(state):
         
         #Financials
         with st.beta_expander("Financials"):
-            bs = st.checkbox("Balance Sheet", key =121)
-            pnl = st.checkbox("Income Statement", key = 14234)
+            fin = st.radio(ticker,("Balance Sheet","Income Statement","Cash Flow","Revenue and Earnings","Dividends and Splits"))
+            st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+            fin_period = st.radio("Period",("~","Annual","Quarter"))
+        
         # Algo Selection        
         with st.beta_expander("Trading Strategy"):
             strategy = st.selectbox("", ('None','44-MA','MA Crossover','MACD Crossover','RSI Strategy'))
+        
         # Premium 
         with st.beta_expander("Premium"):
             get_signals = st.checkbox("Today's Signals", key = 1232)
+            
+        
+        st.markdown("---")
+        close = st.checkbox("Log me out")
+            
+    ###########################################        
                 
-    
-    Stock = chart.load_stock_data(exchng,ticker,period,interval)
-           
+    Stock = chart.load_stock_data(exchng,ticker,period,interval) 
     fig = chart.draw_chart(exchng, Stock, chart_type, ticker, interval)
     chart.add_trace(fig, traces, widget1, widget2, widget3, Stock)
-    chart_area.write(fig)
-            
+               
     if strategy == '44-MA':
         if interval != '1d':
             msgs.warning("Stratgies are best applicable on daily charts. Select interval to be 1d to get better trades") 
@@ -113,7 +123,7 @@ def start_dashboard(state):
         chart.buy_signal(Stock, fig, strategy)
         with orders.beta_container():
             st.markdown('<p> Here are your order details:<p>', unsafe_allow_html=True)
-            st.write(buy_df)
+            st.table(buy_df)
         
     if strategy == 'MA Crossover':
         if interval != '1d':
@@ -123,7 +133,7 @@ def start_dashboard(state):
         chart.sell_signal(Stock, fig, strategy)
         with orders.beta_container():
             st.markdown('<p> Here are your order details:<p>', unsafe_allow_html=True)
-            st.write(buy_df)
+            st.table(buy_df)
         
     if strategy == 'MACD Crossover':
         if interval != '1d':
@@ -133,7 +143,7 @@ def start_dashboard(state):
         chart.sell_signal(Stock, fig, strategy)
         with orders.beta_container():
             st.markdown('<p> Here are your order details:<p>', unsafe_allow_html=True)
-            st.write(buy_df)
+            st.table(buy_df)
 
     if strategy == 'RSI Strategy':
         if interval != '1d':
@@ -143,7 +153,7 @@ def start_dashboard(state):
         #chart.sell_signal(Stock, fig, strategy)
         with orders.beta_container():
             st.markdown('<p> Here are your order details:<p>', unsafe_allow_html=True)
-            st.write(buy_df)
+            st.table(buy_df)
         
     
     if compare:
@@ -151,7 +161,62 @@ def start_dashboard(state):
         fig = chart.draw_chart(exchng, data, chart_type, ticker, interval)
         chart.add_compare(fig,com_exchng,com_ticker,period, interval)
         
-    chart_area.write(fig)
+           
+    
+    chart_area.plotly_chart(fig, use_container_width= True)   
+    
+    if fin == "Balance Sheet" and fin_period != "~" :
+        fin_data = chart.get_financial(exchng,ticker)
+        chart_area.markdown('<p> <span style = "font-size:30px; font-weight: bold"> Balance Sheet </span> (all numbers in thousands)<p>',unsafe_allow_html=True)
+        if fin_period == "Annual":
+            balance = fin_data.balance_sheet.div(1000)
+            balance.columns = balance.columns.strftime("%d-%m-%Y")
+            fin_area.table(balance)
+            
+        else:
+            balance = fin_data.quarterly_balance_sheet.div(1000)
+            balance.columns = balance.columns.strftime("%d-%m-%Y")
+            fin_area.table(balance)
+    
+    if fin == "Income Statement" and fin_period != "~" :
+        fin_data = chart.get_financial(exchng,ticker)
+        chart_area.markdown('<p> <span style = "font-size:30px; font-weight: bold"> Income Statement </span> (all numbers in thousands)<p>',unsafe_allow_html=True)
+        if fin_period == "Annual":
+            income = fin_data.financials.div(1000)
+            income.columns = income.columns.strftime("%d-%m-%Y")
+            fin_area.table(income)
+        else:
+            income = fin_data.quarterly_financials.div(1000)
+            income.columns = income.columns.strftime("%d-%m-%Y")
+            fin_area.table(income)
+        
+    if fin == "Cash Flow" and fin_period != "~" :
+        fin_data = chart.get_financial(exchng,ticker)
+        chart_area.markdown('<p> <span style = "font-size:30px; font-weight: bold"> Cash Flow </span> (all numbers in thousands)<p>',unsafe_allow_html=True)
+        if fin_period == "Annual":
+            cf = fin_data.cashflow.div(1000)
+            cf.columns = cf.columns.strftime("%d-%m-%Y")
+            fin_area.table(cf)
+        else:
+            cf = fin_data.quarterly_cashflow.div(1000)
+            cf.columns = cf.columns.strftime("%d-%m-%Y")
+            fin_area.table(cf)
+                   
+    if fin =="Revenue and Earnings" and fin_period != "~" :
+        fin_data = chart.get_financial(exchng,ticker)
+        chart_area.markdown('<p> <span style = "font-size:30px; font-weight: bold"> Revenue and Earnings </span> (all numbers in thousands)<p>',unsafe_allow_html=True)
+        if fin_period == "Annual":
+            fin_area.table(fin_data.earnings.div(1000)[::-1])
+        else:
+            fin_area.table(fin_data.quarterly_earnings.div(1000)[::-1])
+            
+    if fin =="Dividends and Splits":
+        fin_data = chart.get_financial(exchng,ticker)
+        chart_area.markdown('<p style = "font-size:30px; font-weight: bold"> Dividends and Splits <p>', unsafe_allow_html=True)
+        dividend = fin_data.actions
+        dividend.index = dividend.index.strftime("%d-%m-%Y")
+        fin_area.table(dividend[::-1])
+        
         
 
     #Defining function to signal Buying
@@ -171,8 +236,25 @@ def start_dashboard(state):
                     st.write(shares.Symbol[i] + ' . NSE')
                     st.write(buy_df.tail(2))
         else:
-            signals.warning("Subscribe today to get Premium Features")
-                            
+            layout.empty()
+            proceed, prem_page = qr.go_premium(state)
+               
+            
+    
+    if (state.paid and proceed) or state.trans_page:
+        state.trans_page = True
+        prem_page.empty()
+        upgrade,confirm_lay =  qr.confirm_pay(state)
+
+    if (state.transID and upgrade) or state.thanks :
+        state.thanks = True
+        confirm_lay.empty()
+        if not state.closed:
+            qr.thankyou(state)
+
+
+
+                          
        
                         
         

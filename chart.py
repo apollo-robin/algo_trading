@@ -32,6 +32,20 @@ def load_stock_data(exchng,Ticker,period, interval):
         st.stop()      
     return Stock
     
+#Function to download the Stock Price Data
+@st.cache(allow_output_mutation=True,show_spinner=False,suppress_st_warning=True)
+def get_financial(exchng,Ticker):
+    if Ticker == 'NIFTY 50' or Ticker == 'NIFTY BANK' or Ticker == 'SENSEX':
+        st.info("Financials not available for Indices. Please select a company to get the financial data")
+        st.stop()
+    if exchng =='NSE':
+        Ticker = Ticker + '.NS'
+    else :
+        Ticker = Ticker + '.BO'
+    Stock = yf.Ticker(Ticker)
+        
+    return Stock
+
 def draw_chart(exchng, Stock, chart_type, ticker, interval):
     if exchng =='NSE':
         plot_title = ticker+ ' . '+interval+' . NSE' 
@@ -42,12 +56,13 @@ def draw_chart(exchng, Stock, chart_type, ticker, interval):
         candles = go.Candlestick(x=Stock.index, open=Stock.Open, high=Stock.High, low=Stock.Low, close=Stock.Close, increasing_line_color= 'rgb(38,166,154)', decreasing_line_color= 'rgb(239,83,80)', increasing_fillcolor= 'rgb(38,166,154)', decreasing_fillcolor= 'rgb(239,83,80)',line_width = 1,showlegend = False)
         fig = make_subplots(specs=[[{"secondary_y": True}]])
         fig.add_trace(candles) 
-        fig.update_layout(title=plot_title, autosize=False, width=840, height=600, xaxis_rangeslider_visible=False) 
+        fig.update_layout(title=plot_title,height=600, xaxis_rangeslider_visible=False,  legend = dict(yanchor="top",y = -0.1,xanchor="left", x=0.01,orientation="h")) 
+        
     else :
         line = go.Scatter(x=Stock.index, y=Stock.Close, line=dict(color='rgb(61,162,244)',width = 2), name = 'Close' )
         fig = make_subplots(specs=[[{"secondary_y": True}]])
         fig.add_trace(line)
-        fig.update_layout(title=plot_title,autosize=False,width=840,height=600) 
+        fig.update_layout(title=plot_title,height=600,legend = dict(yanchor="top",y = -0.1,xanchor="left", x=0.01,orientation="h")) 
     
     return fig
 

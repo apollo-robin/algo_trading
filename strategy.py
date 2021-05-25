@@ -9,8 +9,9 @@ import numpy as np
 import math 
 import ta
 import datetime
+import streamlit as st
 
-
+@st.cache(allow_output_mutation=True,show_spinner=False,suppress_st_warning=True)
 def ma44(data):
     data['44MA'] = data['Close'].rolling(window= 44).mean()
     sigBUY = []
@@ -52,12 +53,15 @@ def ma44(data):
             Quantity.append(math.floor(Risk / diff))
             Target.append(price + 2*diff)
     
+    
     buy_df = pd.DataFrame({'Date':Date, 'Buy Price': BuyPrice,
                      'Stop Loss': StopLoss, 'Target': Target, 'Quantity': Quantity})
 
             
     return buy_df , sigBUY
 
+
+@st.cache(allow_output_mutation=True,show_spinner=False,suppress_st_warning=True)
 def ma_crossover(data):
     sigPriceBuy = []
     sigPriceSell = []
@@ -107,11 +111,13 @@ def ma_crossover(data):
             Date.append(data.iloc[:,0][i]+ datetime.timedelta(days=1))
             SellPrice.append(data['Close'][i])
             BuyPrice.append(np.nan)            
-            
+    
+    
     buy_df = pd.DataFrame({'Date':Date, 'Buy Price': BuyPrice, 'Sell Price': SellPrice})
     return buy_df
     
 
+@st.cache(allow_output_mutation=True,show_spinner=False,suppress_st_warning=True)
 def macd_crossover(data):
     data['MACD'] = ta.trend.MACD(data['Close'],window_slow=26, window_fast=12, window_sign=9).macd()
     data['SIGNAL'] = ta.trend.MACD(data['Close'],window_slow=26, window_fast=12, window_sign=9).macd_signal()
@@ -147,7 +153,7 @@ def macd_crossover(data):
     Date = []
     BuyPrice = []
     SellPrice = []
-
+   
     
     data = data.reset_index()
     for i in range(len(data)):
@@ -162,14 +168,19 @@ def macd_crossover(data):
             Date.append(data.iloc[:,0][i]+ datetime.timedelta(days=1))
             SellPrice.append(data['Close'][i])
             BuyPrice.append(np.nan)            
-            
+    
+    
     buy_df = pd.DataFrame({'Date':Date, 'Buy Price': BuyPrice, 'Sell Price': SellPrice})
+    
+       
+    
     return buy_df
     
     
     
     return
 
+@st.cache(allow_output_mutation=True,show_spinner=False,suppress_st_warning=True)
 def rsi():
     
     return

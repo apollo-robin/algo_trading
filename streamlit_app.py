@@ -36,14 +36,12 @@ def load_home(state):
     
     # Laying out the homepage 
     home = st.empty() 
-    col1 , col2 = st.beta_columns((7,2))
-    back = col2.empty()
-    
+     
     
     # Building up the homepage
     if state.login:
         login.launch_login(state,db)
-        back_click = back.button("< Go Back ")
+        back_click = home.button("< Go Back ")
         if back_click:
             state.login = False
             load_home(state)
@@ -62,6 +60,9 @@ def load_home(state):
             home.empty()
             login.launch_login(state,db)
             state.login = True
+    
+    if state.logged_in:
+        home.empty()
 
 load_home(state)    
 state.sync()   
