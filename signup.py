@@ -56,7 +56,7 @@ def launch_signup(state,db):
             error_msg.error("Fill in missing fields")
             st.stop()
         if not password == confirm_pass:
-            error_msg.error("Password does not match")
+            error_msg.error("Passwords do not match")
             st.stop()
         user_info = user_exists(username)
         

@@ -46,17 +46,19 @@ def confirm_pay(state, confirm):
         st.markdown('<p> <br><br><br></p>', unsafe_allow_html=True)
         l,m,r = st.beta_columns((4,6,4))
         transID = m.text_input("Just enter your Transaction ID")
+        upgrade = m.checkbox("I Confirm")
         if transID != "":
             state.transID = True
-            
-        upgrade = m.checkbox("I Confirm")
-        col1,col2,col3 = st.beta_columns((1,6,1))
+        col1,col2,col3,col4 = st.beta_columns((1,0.1,2,1))
         col2.empty()  
         col11,col12,col13 = st.beta_columns((1,6,1)) 
         col12.empty()
         lb,mb,rb = st.beta_columns((4,3,4))
         mb.empty()
-    return upgrade 
+        if upgrade and transID == '':
+            col3.success("Please enter Transaction ID")
+            st.stop()
+    return upgrade , transID
 
 
 def thankyou(state, thanks):
@@ -66,7 +68,6 @@ def thankyou(state, thanks):
         l,m,r = st.beta_columns((1,6,1))
         m.markdown('<p style= "text-align: center; font-family:Courier New;"> We will update your account status within 2-4  hrs.<br><br><br> </p>', unsafe_allow_html=True)
         m.empty()
-        
         col1, col2, col3 = st.beta_columns((1,6,1))
         col2.markdown('<p style ="text-align:center;"> Uncheck Premium to close <p>',unsafe_allow_html= True)
       

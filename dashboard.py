@@ -14,7 +14,7 @@ from google.cloud import firestore
 from google.oauth2 import service_account
 import json
 import qr
-
+from datetime import date
 
 def start_dashboard(state):
     # Authenticate to Firestore 
@@ -32,8 +32,6 @@ def start_dashboard(state):
         else:
             return False     
     
-    upgrade = 0 
-    prem_page = st.empty()
     
     #Laying out the page
     layout = st.empty()
@@ -240,12 +238,17 @@ def start_dashboard(state):
     
             if (state.paid and proceed) or state.trans_page:
                 state.trans_page = True
-                upgrade =  qr.confirm_pay(state, chart_area)
+                upgrade , transID =  qr.confirm_pay(state, chart_area)
+                
         
-            if (state.transID and upgrade) or state.thanks :
-                state.thanks = True                
+            if (state.transID != "" and upgrade) or state.thanks :
+                state.thanks = True       
+                user_info = db.collection("users").document(state.user)
+                subs_date = date.today().strftime("%d-%m-%Y")
+                user_info.set({"PremTransID": transID, "SubsDate": subs_date}, merge = True)  
                 qr.thankyou(state, chart_area)
                 
+    
 
 
 
