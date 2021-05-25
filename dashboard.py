@@ -236,21 +236,16 @@ def start_dashboard(state):
                     st.write(shares.Symbol[i] + ' . NSE')
                     st.write(buy_df.tail(2))
         else:
-            layout.empty()
-            proceed, prem_page = qr.go_premium(state)
-               
-            
+            proceed = qr.go_premium(state, chart_area)          
     
-    if (state.paid and proceed) or state.trans_page:
-        state.trans_page = True
-        prem_page.empty()
-        upgrade,confirm_lay =  qr.confirm_pay(state)
-
-    if (state.transID and upgrade) or state.thanks :
-        state.thanks = True
-        confirm_lay.empty()
-        if not state.closed:
-            qr.thankyou(state)
+            if (state.paid and proceed) or state.trans_page:
+                state.trans_page = True
+                upgrade =  qr.confirm_pay(state, chart_area)
+        
+            if (state.transID and upgrade) or state.thanks :
+                state.thanks = True                
+                qr.thankyou(state, chart_area)
+                
 
 
 
