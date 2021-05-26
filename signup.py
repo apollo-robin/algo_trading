@@ -10,18 +10,26 @@ import streamlit as st
 from PIL import Image
 import login
 import qr
+from datetime import date
 
 
 def launch_signup(state,db):
            
     @st.cache(show_spinner=False)
     def user_exists(username):
-        data_ref = db.collection("users").document(username)
-        data = data_ref.get()
-        if data.exists:
+        data_ref1 = db.collection("users").document(username)
+        data1 = data_ref1.get()
+        if data1.exists:
             return True
-        else:
-            return False
+        else:      
+            data_ref2 = db.collection("new_users").document(username)
+            data2 = data_ref2.get()
+            if data2.exists:
+                return True
+            else:
+                return False
+        
+        
             
     
     # Load image resources 
@@ -70,8 +78,9 @@ def launch_signup(state,db):
         user_info = user_exists(username)
         
         if user_info == False :
-            #user_info = db.collection("new_users").document(username)
-            #user_info.set({"passwored": password, "email":email})
+            user_info = db.collection("new_users").document(username)
+            sign_date = date.today().strftime("%d-%m-%Y")
+            user_info.set({"passwored": password, "email":email, "signed on": sign_date})
             signup.empty()
             state.signup_submit = True
             qr.pop_qr()
