@@ -10,14 +10,25 @@ from PIL import Image
 
 def pop_qr():
     qr = Image.open('qr_gpay.jpeg')
+    qr = Image.open('qr_gpay.jpeg')
     with st.beta_container():
         st.markdown('<p style="text-align: center;font-size:30px;font-family:Segoe Script"> almost there . . </p>', unsafe_allow_html=True)
         l,m,r = st.beta_columns((4,3,4))
         m.image(qr, use_column_width=1)
         col1,col2,col3 = st.beta_columns((2,5,2))
         col2.markdown('<p style= "text-align: center; font-family:Courier New;"> Pay a token of Rs. 1 to activate your account. Mention your username while paying. Upon payment, account will be activated within 2-4 hours </p>', unsafe_allow_html=True)
-        col2.markdown('<p style="text-align: center;font-size:30px;font-family:Segoe Script"> Happy Trading ! </p>', unsafe_allow_html=True)
+        col2.markdown('<p style="text-align: center;font-size:30px;font-family:Segoe Script"> Happy Trading ! <br><br></p>', unsafe_allow_html=True)
+        
+        #col11,col12,col13 = st.beta_columns(3)
+        #transID = col12.text_input("Enter Transaction ID")
+        
+        l1,m2,r2 = st.beta_columns((5,2,4))
+        #create = m2.button("Activate my account")
+        m2.button("Close")
+    #return transID , create , qr_page  
     
+
+
         
 def go_premium(state, premium_page):
     qr = Image.open('qr_gpay.jpeg')

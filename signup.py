@@ -10,7 +10,6 @@ import streamlit as st
 from PIL import Image
 import login
 import qr
-import time
 
 
 def launch_signup(state,db):
@@ -32,12 +31,12 @@ def launch_signup(state,db):
     signup = st.empty()
     
     with signup.beta_container():
-        col3, col2, col1, col4 = st.beta_columns((2,0.05,1,0.2))
+        col3, col2, col1, col4 = st.beta_columns((2,0.05,1.1,0.1))
         col1.markdown('<p style= "color: #1f4886; font-family:Segoe Script; font-size:30px; font-weight: bold"> Welcome, join us <p>', unsafe_allow_html=True )
         col3.markdown('<p style= "font-weight: bold; color: #1f4886; font-family:Segoe Script; font-size: 44px"> apollo <p>', unsafe_allow_html=True )
         col1.markdown("Enter your details to continue", unsafe_allow_html=True)
         
-        col32, col22, col12, col42 = st.beta_columns((2,0.05,1,0.2))
+        col32, col22, col12, col42 = st.beta_columns((2,0.05,1.1,0.1))
         col32.image(signup_img, use_column_width=1)
         
         with col12.form("signup_form"):
@@ -47,29 +46,48 @@ def launch_signup(state,db):
             confirm_pass = st.text_input("Re-Enter Password")
             submit = st.form_submit_button("Sign Up")
             error_msg = st.empty()
+            trans_msg = st.empty()
         
-        col12.markdown("Already have an account ?")
-        signin_button = col12.button("Sign In")        
-                
-    if submit:
+        col_a, col_b, col_c, col_d = st.beta_columns((2,0.05,1.1,0.1))
+        col_c.markdown("Already have an account ?")
+        col_b1, col_c1, col_d1 = st.beta_columns((1.7,0.3,0.7))
+        signin_button = col_c1.button("Sign In") 
+        pay_done = col_d1.button("Show QR")
+        
+    
+         
+    if submit : 
         if email == '' or username == '' or password =='' or confirm_pass =='':
             error_msg.error("Fill in missing fields")
             st.stop()
         if not password == confirm_pass:
             error_msg.error("Passwords do not match")
             st.stop()
+        if " " in username:
+            error_msg.error("Username must not contain spaces")
+            st.stop()
+    
         user_info = user_exists(username)
         
-        if user_info == False:
-            user_info = db.collection("new_users").document(username)
-            user_info.set({"passwored": password, "email":email})
-            error_msg.success("Account created successfully") 
-            time.sleep(4)
+        if user_info == False :
+            #user_info = db.collection("new_users").document(username)
+            #user_info.set({"passwored": password, "email":email})
             signup.empty()
+            state.signup_submit = True
             qr.pop_qr()
+            state.popped_qr = True
+        
         else:
            error_msg.error("Username taken") 
+           trans_msg.markdown('<p style ="font-size:14px; font-style: Courier New;"> Check if you signed up but couldn\'t complete the payment<p>', unsafe_allow_html = True)
     
+    
+    if pay_done:
+        signup.empty()
+        state.signup_submit = True
+        qr.pop_qr()
+        state.popped_qr = True              
+        
     if signin_button:
         signup.empty()
         state.signup_form = False

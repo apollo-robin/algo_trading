@@ -243,9 +243,9 @@ def start_dashboard(state):
         
             if (state.transID != "" and upgrade) or state.thanks :
                 state.thanks = True       
-                user_info = db.collection("users").document(state.user)
+                user_info = db.collection("upgrade").document(state.user)
                 subs_date = date.today().strftime("%d-%m-%Y")
-                user_info.set({"PremTransID": transID, "SubsDate": subs_date}, merge = True)  
+                user_info.set({"PremTransID": transID, "SubsDate": subs_date})  
                 qr.thankyou(state, chart_area)
                 
     
