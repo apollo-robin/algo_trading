@@ -80,7 +80,7 @@ def launch_signup(state,db):
         if user_info == False :
             user_info = db.collection("new_users").document(username)
             sign_date = date.today().strftime("%d-%m-%Y")
-            user_info.set({"passwored": password, "email":email, "signed on": sign_date})
+            user_info.set({"password": password, "email":email, "signed on": sign_date})
             signup.empty()
             state.signup_submit = True
             qr.pop_qr()
