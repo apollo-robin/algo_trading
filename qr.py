@@ -21,9 +21,9 @@ def pop_qr():
         #col11,col12,col13 = st.beta_columns(3)
         #transID = col12.text_input("Enter Transaction ID")
         
-        #l1,m2,r2 = st.beta_columns((5,2,4))
+        l1,m2,r2 = st.beta_columns((5,2,4))
         #create = m2.button("Activate my account")
-        #m2.button("Close")
+        m2.button("Close")
     #return transID , create , qr_page  
     
 
