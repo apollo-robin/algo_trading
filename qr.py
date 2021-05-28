@@ -23,7 +23,7 @@ def pop_qr():
         
         l1,m2,r2 = st.beta_columns((5,2,4))
         #create = m2.button("Activate my account")
-        m2.button("Close")
+        close = m2.button("Close")
     #return transID , create , qr_page  
     
 
