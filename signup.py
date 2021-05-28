@@ -93,7 +93,6 @@ def launch_signup(state,db):
     
     if pay_done or state.popped_qr :
         signup.empty()
-        state.signup_submit = True
         qr.pop_qr()
         state.popped_qr = True              
         
