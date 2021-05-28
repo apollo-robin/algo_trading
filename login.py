@@ -41,11 +41,12 @@ def launch_login(state,db):
         with login.beta_container():
             col1, col2, col3, col4 = st.beta_columns((2,0.05,1,0.5))
             col1.markdown('<p style= "font-weight: bold; color: #1f4886; font-family:Segoe Script; font-size: 44px"> apollo <p>', unsafe_allow_html=True  )
-            col3.markdown('<h1 style= "color: #1f4886;font-family:Segoe Script;font-size:30px; font-weight: bold"> Sign in to apollo <h1>', unsafe_allow_html=True )
-            col3.markdown("Enter your details to continue", unsafe_allow_html=True)
-            
             col12, col22, col32, col42 = st.beta_columns((2,0.05,1,0.5))
             col12.image(login_img, use_column_width=1)
+            col3.markdown('<h1 style= "color: #1f4886;font-family:Segoe Script;font-size:30px; font-weight: bold"> Sign in to apollo <h1>', unsafe_allow_html=True )
+            col32.markdown("Enter your details to continue", unsafe_allow_html=True)
+            
+           
             
             with col32.form("login_form"):
                 username_login = st.text_input("Username")
