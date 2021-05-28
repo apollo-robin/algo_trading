@@ -64,7 +64,7 @@ def launch_signup(state,db):
         
     
          
-    if submit : 
+    if submit or state.signup_submit: 
         if email == '' or username == '' or password =='' or confirm_pass =='':
             error_msg.error("Fill in missing fields")
             st.stop()
