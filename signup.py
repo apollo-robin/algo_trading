@@ -91,7 +91,7 @@ def launch_signup(state,db):
            trans_msg.markdown('<p style ="font-size:14px; font-style: Courier New;"> Check if you signed up but couldn\'t complete the payment<p>', unsafe_allow_html = True)
     
     
-    if pay_done:
+    if pay_done or state.popped_qr :
         signup.empty()
         state.signup_submit = True
         qr.pop_qr()
