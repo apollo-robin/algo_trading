@@ -68,7 +68,7 @@ def load_home(state):
             click1 = start.button("Get Started")
             logo.markdown('<p style= "font-weight: bold; text-align:left; color: #1f4886; font-family:Segoe Script; font-size: 44px"> apollo <p>', unsafe_allow_html=True)
             
-            st.markdown(f'<img width="1120" src="data:image/gif;base64,{data_url}">', unsafe_allow_html=True,)
+            st.markdown(f'<img width="100%" src="data:image/gif;base64,{data_url}">', unsafe_allow_html=True,)
             
             with st.beta_container():
                 st.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-family:Segoe Script; font-size: 36px"> <br>How apollo helps you trade better <p>', unsafe_allow_html=True)
@@ -80,13 +80,13 @@ def load_home(state):
                 col3.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-family:Segoe Script; font-size: 28px"> Get buy-sell Signals <p>', unsafe_allow_html=True)
                 
                 
-                #col_i1 , col_i2, coli3, col_i4, coli5, col_i6, col_i7 = st.beta_columns((2,3,4,3,4,3,2))
+                
                 col1.image(img_1, use_column_width= True)
                 col2.image(img_2, use_column_width= True)
                 col3.image(img_3, use_column_width= True)
                 
                 
-                #col_b1 , col_b2 , col_b3 = st.beta_columns(3)
+                
                 col1.markdown('<p style= " text-align:center; color: black;  font-size: 14px"> Choose from a rich collection of     intelligent strategies. Just not implement, but understand the principles beneath each strategy  <p>', unsafe_allow_html=True)           
                 
                 col2.markdown('<p style= " text-align:center; color: black; font-size: 14px"> Tell us your risk appetite and we will take care of the rest. Our platform protects you from market volatility and turbulences <p>', unsafe_allow_html=True)
