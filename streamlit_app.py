@@ -71,7 +71,7 @@ def load_home(state):
             st.markdown(f'<img width="100%" src="data:image/gif;base64,{data_url}">', unsafe_allow_html=True,)
             
             with st.beta_container():
-                st.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-family:Segoe Script; font-size: 30px"> <br>How apollo helps you trade better <p>', unsafe_allow_html=True)
+                st.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-family:Segoe Script ; font-size: 30px"> <br>How apollo helps you trade better <p>', unsafe_allow_html=True)
                 st.markdown('<p style= "text-align:center; color: black; font-size: 14px"> With our expert trading algorithms, anyone can trade in a more <br> disciplined manner free from emotional decisions  <p>', unsafe_allow_html=True)
                 
                 col1 , col2 , col3 = st.beta_columns(3)
@@ -95,7 +95,7 @@ def load_home(state):
             
             with st.beta_container():
                 st.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-family:Segoe Script; font-size: 30px"> <br> Everything packed at one place <p>', unsafe_allow_html=True)
-                st.markdown('<p style= "text-align:center; color: black; font-size: 14px"> Charts, Indicators, Strategies and a lot more ,<br> in one simple Dashboard  <p>', unsafe_allow_html=True)
+                st.markdown('<p style= "text-align:center; color: black; font-size: 14px"> Charts, Indicators, Strategies and a lot more,<br> in one simple Dashboard  <p>', unsafe_allow_html=True)
                 demo_1, demo_2, demo_3 = st.beta_columns((1,7,1))
                 demo_2.image(demo, use_column_width= True)
             
@@ -116,9 +116,9 @@ def load_home(state):
                 col13.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-family:Segoe Script; font-size: 22px">  Backtesting <p>', unsafe_allow_html=True)
                 col13.markdown('<p style= " text-align:center;color: black; font-size: 14px"> Test your chosen strategy on historical market data and get a clearer picture on the strategy’s performance in real scenarios <p>', unsafe_allow_html=True)
             
-            st.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-family:Segoe Script; font-size: 24px"> <br> We have got something for everyone , from learners to experts !<p>', unsafe_allow_html=True)
+            st.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-family:Segoe Script; font-size: 24px"> <br> We have got something for everyone, from learners to experts !<p>', unsafe_allow_html=True)
             col31 , col32, col33 = st.beta_columns((5.4,3,4))
-            click2 = col32.button("Get Started", key = 43543)
+            click2 = col32.button("Get Started", key= "1")
             
             st.markdown("***", unsafe_allow_html=True)
             
