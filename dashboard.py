@@ -230,14 +230,15 @@ def start_dashboard(state):
             for i in range(len(shares)):
                 Stock = chart.load_stock_data('NSE',shares.Symbol[i], '3mo', '1d')
                 buy_df , sigBUY = strat.ma44(Stock)
-                if math.isnan(sigBUY[-1]) and math.isnan(sigBUY[-2]) and math.isnan(sigBUY[-3]):
-                    continue
-                else:
-                    if flag == 0:
-                        signals.markdown('<h2> Your best picks for today ;) <h2', unsafe_allow_html=True)
-                        flag = 1
-                    st.write(shares.Symbol[i] + ' . NSE')
-                    st.write(buy_df.tail(2))
+                if len(sigBUY) >= 3:
+                    if math.isnan(sigBUY[-1]) and math.isnan(sigBUY[-2]) and math.isnan(sigBUY[-3]):
+                        continue
+                    else:
+                        if flag == 0:
+                            signals.markdown('<h2> Your best picks for today ;) <h2', unsafe_allow_html=True)
+                            flag = 1
+                        st.write(shares.Symbol[i] + ' . NSE')
+                        st.write(buy_df.tail(2))
         else:
             if not state.thanks:
                 proceed = qr.go_premium(state, chart_area)          

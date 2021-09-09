@@ -18,16 +18,29 @@ def ma44(data):
     
     # Signal when to buy 
     for i in range (len(data)):
-        if (data['44MA'][i] > (data['44MA'][i-1]+data['44MA'][i-2]+data['44MA'][i-3])/3 ) :
-            if data['Open'][i] < data['Close'][i]:
-                if ( abs(data['44MA'][i] - data['Low'][i]) < 4 and data['44MA'][i] < data['Open'][i]):
-                    sigBUY.append(data['Close'][i])
+        if len(data)>3:
+            if (data['44MA'][i] > (data['44MA'][i-1]+data['44MA'][i-2]+data['44MA'][i-3])/3 ) :
+                if data['Open'][i] < data['Close'][i]:
+                    if ( abs(data['44MA'][i] - data['Low'][i]) < 4 and data['44MA'][i] < data['Open'][i]):
+                        sigBUY.append(data['Close'][i])
+                    else:
+                        sigBUY.append(np.nan)
                 else:
                     sigBUY.append(np.nan)
             else:
                 sigBUY.append(np.nan)
         else:
-            sigBUY.append(np.nan)
+            if (data['44MA'][i] > data['44MA'][i-1]) :
+                if data['Open'][i] < data['Close'][i]:
+                    if ( abs(data['44MA'][i] - data['Low'][i]) < 4 and data['44MA'][i] < data['Open'][i]):
+                        sigBUY.append(data['Close'][i])
+                    else:
+                        sigBUY.append(np.nan)
+                else:
+                    sigBUY.append(np.nan)
+            else:
+                sigBUY.append(np.nan)
+            
             
     data['BUY'] = sigBUY
     Date = []

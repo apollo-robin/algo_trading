@@ -71,29 +71,29 @@ def add_trace(fig, traces,widget1, widget2, widget3, Stock):
     
     if "Short Moving Average" in traces:
         SMA_source = widget1.selectbox("SMA Source",["Close","Open","High","Low"])
-        SMA_window = widget2.number_input("SMA Window",value = 30, key = 1)
+        SMA_window = widget2.number_input("SMA Window",value = 30, key = "1123")
         Stock['SMA'] = Stock[SMA_source].rolling(window = SMA_window).mean()
         SMA = go.Scatter(x=Stock.index, y=Stock.SMA,  line=dict(color='rgb(61,162,244)',width = 1.2), name = 'SMA')
         fig.add_trace(SMA)
 
     if "Long Moving Average" in traces:
         LMA_source = widget1.selectbox("LMA Source",["Close","Open","High","Low"])
-        LMA_window = widget2.number_input("LMA Window",value = 50, key = 2)
+        LMA_window = widget2.number_input("LMA Window",value = 50, key = "sdvw23")
         Stock['LMA'] = Stock[LMA_source].rolling(window = LMA_window).mean()
         LMA = go.Scatter(x=Stock.index, y=Stock.LMA, line=dict(color='rgb(161, 224, 88)',width = 1.2), name = 'LMA')
         fig.add_trace(LMA)
             
     if "Exponential Moving Average" in traces:
         EMA_source = widget1.selectbox("EMA Source",["Close","Open","High","Low"])
-        EMA_span = widget2.number_input("EMA Window",value = 13, key = 3)
+        EMA_span = widget2.number_input("EMA Window",value = 13, key = "asf32r2")
         Stock['EMA'] = Stock[EMA_source].ewm(span= EMA_span, adjust= False).mean()
         EMA = go.Scatter(x=Stock.index, y=Stock.EMA,  line=dict(color='rgb(192, 109,237)',width = 1.2), name = 'EMA')
         fig.add_trace(EMA)
         
     if "MACD" in traces:
         MACD_source = widget1.selectbox("MACD Source",["Close","Open","High","Low"])
-        MACD_short_span = widget2.number_input("MACD Short Window",value = 12,  key = 4)
-        MACD_long_span = widget3.number_input("MACD Long Window",value = 26,  key = 5)
+        MACD_short_span = widget2.number_input("MACD Short Window",value = 12,  key = "feewt324")
+        MACD_long_span = widget3.number_input("MACD Long Window",value = 26,  key = "sfws234")
         # Calculate the Exponential Moving Average
         Stock['ShortEMA'] = Stock[MACD_source].ewm(span = MACD_short_span, adjust = False).mean()
         Stock['LongEMA'] = Stock[MACD_source].ewm(span = MACD_long_span, adjust = False).mean()
@@ -106,10 +106,10 @@ def add_trace(fig, traces,widget1, widget2, widget3, Stock):
     if "MACD Signal" in traces:
         if not "MACD" in traces:
             MACD_source = widget1.selectbox("MACD Source",["Close","Open","High","Low"])
-            MACD_short_span = widget2.number_input("MACD Short Window",value = 12,  key = 6)
-            MACD_long_span = widget3.number_input("MACD Long Window",value = 26, key= 7 )
+            MACD_short_span = widget2.number_input("MACD Short Window",value = 12,  key = "234rwef4")
+            MACD_long_span = widget3.number_input("MACD Long Window",value = 26, key= "sfwr233" )
             
-        MACD_signal_span = widget3.number_input("MACD Signal Smooth",value = 9, key = 8)
+        MACD_signal_span = widget3.number_input("MACD Signal Smooth",value = 9, key = "2t54wfe")
         # Calculate the Exponential Moving Average
         Stock['ShortEMA'] = Stock[MACD_source].ewm(span = MACD_short_span, adjust = False).mean()
         Stock['LongEMA'] = Stock[MACD_source].ewm(span = MACD_long_span, adjust = False).mean()
@@ -121,7 +121,7 @@ def add_trace(fig, traces,widget1, widget2, widget3, Stock):
         
     if "RSI" in traces:
         RSI_source = widget1.selectbox("RSI Source",["Close","Open","High","Low"])
-        RSI_period = widget2.number_input("RSI Period",value = 14, key = 9)
+        RSI_period = widget2.number_input("RSI Period",value = 14, key = "svdf24r2")
         Stock['RSI'] = ta.momentum.RSIIndicator(Stock[RSI_source], window = RSI_period).rsi()
         RSI = go.Scatter(x=Stock.index, y=Stock.RSI,  line=dict(color='rgb(163, 81, 240)',width = 1.2), name = 'RSI')
         fig.add_trace(RSI,secondary_y= True)
