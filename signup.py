@@ -10,6 +10,7 @@ import streamlit as st
 from PIL import Image
 import login
 from datetime import date
+import re 
 
 
 def launch_signup(state,db):
@@ -60,14 +61,27 @@ def launch_signup(state,db):
         if email == '' or username == '' or password =='' or confirm_pass =='':
             error_msg.error("Fill in missing fields")
             st.stop()
+        
+        #Validating Email 
+        regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+        if not (re.fullmatch(regex, email)):
+            error_msg.error("Enter valid Email address")
+            st.stop()
+        
+        #Validating Password  
+        reg = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$"
+        pat = re.compile(reg)
+        mat = re.search(pat, password)
+        if not mat:
+            error_msg.error("Make sure your password has at least one number, one uppercase and one lowercase character, one special symbol and is between 6 to 20 characters long.")
+            st.stop() 
+            
         if not password == confirm_pass:
             error_msg.error("Passwords do not match")
             st.stop()
+            
         if " " in username:
             error_msg.error("Username must not contain spaces")
-            st.stop()
-        if len(password) < 8:
-            error_msg.error("Password must be atleast 8 characters")
             st.stop()
         
         user_info = user_exists(username)
