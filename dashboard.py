@@ -263,7 +263,7 @@ def start_dashboard(state):
                             continue
                         else:
                             if flag == 0 and signal_strat != 'None':
-                                signals.markdown('<h2> Your best picks for today ;) <h2', unsafe_allow_html=True)
+                                signals.markdown(f'<p><span style ="font-size:24px"> Your best picks for today ;) </span> ({signal_strat}) <p>', unsafe_allow_html=True)
                                 flag = 1
                             st.write(shares.Symbol[i] + ' . NSE')
                             st.write(buy_df.tail(2))
