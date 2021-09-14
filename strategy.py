@@ -127,7 +127,7 @@ def ma_crossover(data):
     
     
     buy_df = pd.DataFrame({'Date':Date, 'Buy Price': BuyPrice, 'Sell Price': SellPrice})
-    return buy_df
+    return buy_df, sigPriceBuy, sigPriceSell
     
 
 @st.cache(allow_output_mutation=True,show_spinner=False,suppress_st_warning=True)
@@ -186,8 +186,7 @@ def macd_crossover(data):
     buy_df = pd.DataFrame({'Date':Date, 'Buy Price': BuyPrice, 'Sell Price': SellPrice})
     
        
-    
-    return buy_df
+    return buy_df, sigPriceBuy, sigPriceSell
     
     
     

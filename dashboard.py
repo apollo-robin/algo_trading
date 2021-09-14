@@ -108,7 +108,11 @@ def start_dashboard(state):
         # Premium 
         with st.beta_expander("Premium"):
             get_signals = st.checkbox("Today's Signals", key = "1232")
+            if get_signals:
+                signal_strat = st.radio("Strategy",('None','44-MA','MA Crossover','MACD Crossover','RSI Strategy'))
+                st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
             
+                
         
         st.markdown("---")
         log_out = st.checkbox("Log me out")
@@ -131,7 +135,7 @@ def start_dashboard(state):
     if strategy == 'MA Crossover':
         if interval != '1d':
             msgs.warning("Stratgies are best applicable on daily charts. Select interval to be 1d to get better trades") 
-        buy_df = strat.ma_crossover(Stock)
+        buy_df, sigPriceBuy, sigPriceSell = strat.ma_crossover(Stock)
         chart.buy_signal(Stock, fig, strategy)
         chart.sell_signal(Stock, fig, strategy)
         with orders.beta_container():
@@ -141,7 +145,7 @@ def start_dashboard(state):
     if strategy == 'MACD Crossover':
         if interval != '1d':
             msgs.warning("Stratgies are best applicable on daily charts. Select interval to be 1d to get better trades") 
-        buy_df = strat.macd_crossover(Stock)
+        buy_df, sigPriceBuy, sigPriceSell = strat.macd_crossover(Stock)
         chart.buy_signal(Stock, fig, strategy)
         chart.sell_signal(Stock, fig, strategy)
         with orders.beta_container():
@@ -204,7 +208,8 @@ def start_dashboard(state):
             cf = fin_data.quarterly_cashflow.div(1000)
             cf.columns = cf.columns.strftime("%d-%m-%Y")
             fin_area.table(cf)
-                   
+                          
+        
     if fin =="Revenue and Earnings" and fin_period != "~" :
         fin_data = chart.get_financial(exchng,ticker)
         chart_area.markdown('<p> <span style = "font-size:30px; font-weight: bold"> Revenue and Earnings </span> (all numbers in thousands)<p>',unsafe_allow_html=True)
@@ -226,19 +231,34 @@ def start_dashboard(state):
     if get_signals :
         if is_premium(state.user):
             shares = pd.read_csv('NSE_TOP500.csv')
-            flag = 0             
+            flag = 0    
             for i in range(len(shares)):
                 Stock = chart.load_stock_data('NSE',shares.Symbol[i], '3mo', '1d')
-                buy_df , sigBUY = strat.ma44(Stock)
-                if len(sigBUY) >= 3:
-                    if math.isnan(sigBUY[-1]) and math.isnan(sigBUY[-2]) and math.isnan(sigBUY[-3]):
-                        continue
-                    else:
-                        if flag == 0:
-                            signals.markdown('<h2> Your best picks for today ;) <h2', unsafe_allow_html=True)
-                            flag = 1
-                        st.write(shares.Symbol[i] + ' . NSE')
-                        st.write(buy_df.tail(2))
+                if signal_strat == "44-MA":
+                    buy_df , sigBUY = strat.ma44(Stock)
+                    
+                if signal_strat == "MA Crossover":
+                    buy_df , sigPriceBuy, sigPriceSell = strat.ma_crossover(Stock)
+                    sigBUY = sigPriceBuy
+                
+                if signal_strat == "MACD Crossover":
+                    buy_df , sigPriceBuy, sigPriceSell = strat.macd_crossover(Stock)
+                    sigBUY = sigPriceBuy
+                    
+                if signal_strat == "RSI Strategy":
+                    buy_df , sigBUY = strat.rsi(Stock)
+                    
+                if signal_strat != 'None':
+                    if len(sigBUY) >= 3:
+                        if math.isnan(sigBUY[-1]) and math.isnan(sigBUY[-2]) and math.isnan(sigBUY[-3]):
+                            continue
+                        else:
+                            if flag == 0 and signal_strat != 'None':
+                                signals.markdown('<h2> Your best picks for today ;) <h2', unsafe_allow_html=True)
+                                flag = 1
+                            st.write(shares.Symbol[i] + ' . NSE')
+                            st.write(buy_df.tail(2))
+       
         else:
             if not state.thanks:
                 proceed = qr.go_premium(state, chart_area)          

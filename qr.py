@@ -38,10 +38,10 @@ def go_premium(state, premium_page):
         m.image(qr, use_column_width=1)
         col1,col2,col3 = st.beta_columns((1,6,1))
         col2.markdown('<p style= "text-align: center; font-family:Courier New;"> Enjoy all premium features at just <span style ="font-weight:bold;"> Rs. 99 </span> a month.<br> Mention your username while paying. </p>', unsafe_allow_html=True)
-        col11,col12,col13 = st.beta_columns((1,6,1)) 
+        col11,col12,col13 = st.beta_columns((2,6,1)) 
         paid = col12.checkbox("I have made the required transaction to enjoy premium features")
         
-        lb,mb,rb = st.beta_columns((4,3,4))
+        lb,mb,rb = st.beta_columns((5,3,4))
         if paid:
             state.paid = True
         if not paid:

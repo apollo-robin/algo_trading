@@ -10,6 +10,7 @@ import yfinance as yf
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import ta
+import matplotlib.pyplot as plt 
 
 #Function to download the Stock Price Data
 @st.cache(allow_output_mutation=True,show_spinner=False,suppress_st_warning=True)
@@ -52,6 +53,7 @@ def draw_chart(exchng, Stock, chart_type, ticker, interval):
     if exchng == 'BSE':
         plot_title = ticker+ ' . '+interval+' . BSE' 
         
+    
     if chart_type == "Candlestick":
         candles = go.Candlestick(x=Stock.index, open=Stock.Open, high=Stock.High, low=Stock.Low, close=Stock.Close, increasing_line_color= 'rgb(38,166,154)', decreasing_line_color= 'rgb(239,83,80)', increasing_fillcolor= 'rgb(38,166,154)', decreasing_fillcolor= 'rgb(239,83,80)',line_width = 1,showlegend = False)
         fig = make_subplots(specs=[[{"secondary_y": True}]])
