@@ -193,6 +193,58 @@ def macd_crossover(data):
     return
 
 @st.cache(allow_output_mutation=True,show_spinner=False,suppress_st_warning=True)
-def rsi():
+def rsi(data):
+    data['RSI'] = ta.momentum.RSIIndicator(data['Close'], window = 14).rsi()
+    sigPriceBuy = []
+    sigPriceSell = []
+    flag = -1 
     
-    return
+    for i in range (len(data)):
+        if data['RSI'][i] >= 33.33 and data['RSI'][i-1] < 33.33:
+            if flag != 1:
+                sigPriceBuy.append(data['Close'][i])
+                sigPriceSell.append(np.nan)
+                flag = 1
+            else:
+                sigPriceBuy.append(np.nan)
+                sigPriceSell.append(np.nan)
+        elif data['RSI'][i] <= 66.67 and data['RSI'][i-1] > 66.67:
+            if flag != 0:
+                sigPriceBuy.append(np.nan)
+                sigPriceSell.append(data['Close'][i])
+                flag = 0
+            else:
+                sigPriceBuy.append(np.nan)
+                sigPriceSell.append(np.nan)
+        else:
+            sigPriceBuy.append(np.nan)
+            sigPriceSell.append(np.nan)
+    
+    data['BUY'] = sigPriceBuy
+    data['SELL'] = sigPriceSell
+    
+    Date = []
+    BuyPrice = []
+    SellPrice = []
+   
+    
+    data = data.reset_index()
+    for i in range(len(data)):
+        if math.isnan(data['SELL'][i]):
+            if math.isnan(data['BUY'][i]):
+                continue
+            else:
+                Date.append(data.iloc[:,0][i]+ datetime.timedelta(days=1))
+                SellPrice.append(np.nan)
+                BuyPrice.append(data['Close'][i])
+        else:
+            Date.append(data.iloc[:,0][i]+ datetime.timedelta(days=1))
+            SellPrice.append(data['Close'][i])
+            BuyPrice.append(np.nan)            
+    
+    
+    buy_df = pd.DataFrame({'Date':Date, 'Buy Price': BuyPrice, 'Sell Price': SellPrice})
+    
+       
+    return buy_df, sigPriceBuy, sigPriceSell
+    

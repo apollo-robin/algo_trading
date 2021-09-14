@@ -130,7 +130,9 @@ def start_dashboard(state):
         chart.buy_signal(Stock, fig, strategy)
         with orders.beta_container():
             st.markdown('<p> Here are your order details:<p>', unsafe_allow_html=True)
-            st.table(buy_df)
+            if (len(buy_df) !=0) and not isinstance(buy_df.Date, object):
+                 buy_df.Date = buy_df.Date.dt.date              
+            st.write(buy_df)
         
     if strategy == 'MA Crossover':
         if interval != '1d':
@@ -140,7 +142,9 @@ def start_dashboard(state):
         chart.sell_signal(Stock, fig, strategy)
         with orders.beta_container():
             st.markdown('<p> Here are your order details:<p>', unsafe_allow_html=True)
-            st.table(buy_df)
+            if (len(buy_df) !=0) and not isinstance(buy_df.Date, object):
+                 buy_df.Date = buy_df.Date.dt.date
+            st.write(buy_df)
         
     if strategy == 'MACD Crossover':
         if interval != '1d':
@@ -150,17 +154,21 @@ def start_dashboard(state):
         chart.sell_signal(Stock, fig, strategy)
         with orders.beta_container():
             st.markdown('<p> Here are your order details:<p>', unsafe_allow_html=True)
-            st.table(buy_df)
+            if (len(buy_df) !=0) and not isinstance(buy_df.Date, object):
+                 buy_df.Date = buy_df.Date.dt.date
+            st.write(buy_df)
 
     if strategy == 'RSI Strategy':
         if interval != '1d':
             msgs.warning("Stratgies are best applicable on daily charts. Select interval to be 1d to get better trades") 
-        buy_df = strat.rsi(Stock)
-        #chart.buy_signal(Stock, fig, strategy)
-        #chart.sell_signal(Stock, fig, strategy)
+        buy_df, sigPriceBuy, sigPriceSell= strat.rsi(Stock)
+        chart.buy_signal(Stock, fig, strategy)
+        chart.sell_signal(Stock, fig, strategy)
         with orders.beta_container():
             st.markdown('<p> Here are your order details:<p>', unsafe_allow_html=True)
-            st.table(buy_df)
+            if (len(buy_df) !=0) and not isinstance(buy_df.Date, object):
+                 buy_df.Date = buy_df.Date.dt.date
+            st.write(buy_df)
         
     
     if compare:
@@ -246,7 +254,8 @@ def start_dashboard(state):
                     sigBUY = sigPriceBuy
                     
                 if signal_strat == "RSI Strategy":
-                    buy_df , sigBUY = strat.rsi(Stock)
+                    buy_df , sigPriceBuy, sigPriceSell = strat.rsi(Stock)
+                    sigBUY = sigPriceBuy
                     
                 if signal_strat != 'None':
                     if len(sigBUY) >= 3:
