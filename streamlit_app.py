@@ -126,7 +126,7 @@ def load_home(state):
             b1.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-family:Segoe Script; font-size: 44px"> apollo <p>', unsafe_allow_html=True)
             b2.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-size: 20px"> About Us <p>', unsafe_allow_html=True)
             b3.markdown('<p style= "font-weight: bold; text-align:center; color: #1f4886; font-size: 20px"> Contact <p>', unsafe_allow_html=True)
-            b3.markdown('<p style= "text-align:center; color: #1f4886;" >  +91 8789835022 <br>  robinraj055@gmail.com <br> <p>', unsafe_allow_html=True)
+            #b3.markdown('<p style= "text-align:center; color: #1f4886;" >  +91 8789835022 <br>  robinraj055@gmail.com <br> <p>', unsafe_allow_html=True)
             
             
                                                    
