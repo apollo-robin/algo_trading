@@ -1,5 +1,5 @@
 streamlit == 0.82.0
-yfinance == 0.1.63
+yfinance == 0.1.59
 plotly == 4.14.3
 ta == 0.7.0
 pandas == 1.2.1
@@ -10,4 +10,3 @@ Pillow == 8.0.1
 google-cloud-firestore == 2.1.1
 json5 == 0.9.5
 google-auth == 1.30.0
-passlib == 1.7.4
