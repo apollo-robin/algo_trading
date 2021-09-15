@@ -10,3 +10,4 @@ Pillow == 8.0.1
 google-cloud-firestore == 2.1.1
 json5 == 0.9.5
 google-auth == 1.30.0
+passlib == 1.7.4
