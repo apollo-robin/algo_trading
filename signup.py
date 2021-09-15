@@ -11,6 +11,7 @@ from PIL import Image
 import login
 from datetime import date
 import re 
+import encryption
 
 
 def launch_signup(state,db):
@@ -89,7 +90,8 @@ def launch_signup(state,db):
         if user_info == False :
             user_info = db.collection("users").document(username)
             sign_date = date.today().strftime("%d-%m-%Y")
-            user_info.set({"password": password, "email":email, "signed on": sign_date})
+            pass_hashed = encryption.encrypt_password(password)
+            user_info.set({"password": pass_hashed, "email":email, "signed on": sign_date})
             error_msg.success("Account created successfully") 
                     
         else:

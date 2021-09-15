@@ -10,6 +10,7 @@ import streamlit as st
 from PIL import Image
 import dashboard as sd
 import signup
+import encryption
 
 
 
@@ -66,7 +67,7 @@ def launch_login(state,db):
             if user_info == False:
                 error_msg_login.error("Invalid credentials")
                
-            elif user_info["password"] == password_login:
+            elif encryption.check_encrypted_password(password_login,  user_info["password"]):
                 login.empty()
                 state.logged_in = True
                 state.user = username_login
