@@ -10,7 +10,6 @@ import yfinance as yf
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import ta
-import matplotlib.pyplot as plt 
 
 #Function to download the Stock Price Data
 @st.cache(allow_output_mutation=True,show_spinner=False,suppress_st_warning=True)

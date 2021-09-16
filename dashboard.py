@@ -16,7 +16,7 @@ import json
 import qr
 from datetime import date
 import login
-
+import portfolio as pf 
 
 def start_dashboard(state):
     # Authenticate to Firestore 
@@ -44,6 +44,7 @@ def start_dashboard(state):
         chart_area = st.empty()
         fin_area = st.empty()
         orders = st.empty()
+        port_area = st.empty()
     
     #Defining variables 
     upgrade = 0 
@@ -107,6 +108,7 @@ def start_dashboard(state):
         # Premium 
         with st.beta_expander("Premium"):
             get_signals = st.checkbox("Today's Signals", key = "1232")
+            portfolio = st.checkbox("Portfolio", key = "1232sdcsd")
             if get_signals:
                 signal_strat = st.radio("Strategy",('None','44-MA','MA Crossover','MACD Crossover','RSI Strategy'))
                 st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
@@ -285,7 +287,35 @@ def start_dashboard(state):
             else:
                 qr.thankyou(state, chart_area)
                 
-                
+     
+    #Creating and Storing Portfolio 
+    if portfolio :
+        if is_premium(state.user):
+            chart_area.markdown('<p> <span style = "font-size:30px; font-weight: bold"> My Portfolio </span><p>',unsafe_allow_html=True)
+            #Getting Portfolio
+            pf.get_portfolio(state.user,db,port_area)
+        else:
+            if not state.thanks:
+                proceed = qr.go_premium(state, chart_area)          
+        
+                if (state.paid and proceed) or state.trans_page:
+                    state.trans_page = True
+                    upgrade , transID =  qr.confirm_pay(state, chart_area)
+                    
+            
+                if (state.transID != "" and upgrade) or state.thanks :
+                    state.thanks = True       
+                    user_info = db.collection("upgrade").document(state.user)
+                    subs_date = date.today().strftime("%d-%m-%Y")
+                    user_info.set({"PremTransID": transID, "SubsDate": subs_date})  
+                    qr.thankyou(state, chart_area)
+            else:
+                qr.thankyou(state, chart_area)
+        
+
+        
+            
+           
     # Logging out 
     if log_out:
         state.logged_in = False
