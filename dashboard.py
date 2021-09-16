@@ -109,6 +109,7 @@ def start_dashboard(state):
         with st.beta_expander("Premium"):
             get_signals = st.checkbox("Today's Signals", key = "1232")
             portfolio = st.checkbox("Portfolio", key = "1232sdcsd")
+            watchlist = st.checkbox("Watchlist", key = "aubd832")
             if get_signals:
                 signal_strat = st.radio("Strategy",('None','44-MA','MA Crossover','MACD Crossover','RSI Strategy'))
                 st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
@@ -311,6 +312,32 @@ def start_dashboard(state):
                     qr.thankyou(state, chart_area)
             else:
                 qr.thankyou(state, chart_area)
+                
+    
+    #Creating Watchlist 
+    if watchlist:
+        if is_premium(state.user):
+            chart_area.markdown('<p> <span style = "font-size:30px; font-weight: bold"> My Watchlist </span><p>',unsafe_allow_html=True)
+            #Getting Portfolio
+            pf.get_watchlist(state.user,db,port_area)
+        else:
+            if not state.thanks:
+                proceed = qr.go_premium(state, chart_area)          
+        
+                if (state.paid and proceed) or state.trans_page:
+                    state.trans_page = True
+                    upgrade , transID =  qr.confirm_pay(state, chart_area)
+                    
+            
+                if (state.transID != "" and upgrade) or state.thanks :
+                    state.thanks = True       
+                    user_info = db.collection("upgrade").document(state.user)
+                    subs_date = date.today().strftime("%d-%m-%Y")
+                    user_info.set({"PremTransID": transID, "SubsDate": subs_date})  
+                    qr.thankyou(state, chart_area)
+            else:
+                qr.thankyou(state, chart_area)
+        
         
 
         
