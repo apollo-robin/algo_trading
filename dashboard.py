@@ -17,6 +17,8 @@ import qr
 from datetime import date
 import login
 import portfolio as pf 
+import premium 
+
 
 def start_dashboard(state):
     # Authenticate to Firestore 
@@ -239,8 +241,7 @@ def start_dashboard(state):
             cf = fin_data.quarterly_cashflow.div(1000)
             cf.columns = cf.columns.strftime("%d-%m-%Y")
             fin_area.table(cf)
-                          
-        
+                           
     if fin =="Revenue and Earnings" and fin_period != "~" :
         fin_data = chart.get_financial(exchng,ticker)
         chart_area.markdown('<p> <span style = "font-size:30px; font-weight: bold"> Revenue and Earnings </span> (all numbers in thousands)<p>',unsafe_allow_html=True)
@@ -249,6 +250,7 @@ def start_dashboard(state):
         else:
             fin_area.table(fin_data.quarterly_earnings.div(1000)[::-1])
             
+    
     if fin =="Dividends and Splits":
         fin_data = chart.get_financial(exchng,ticker)
         chart_area.markdown('<p style = "font-size:30px; font-weight: bold"> Dividends and Splits <p>', unsafe_allow_html=True)
@@ -388,8 +390,6 @@ def start_dashboard(state):
             else:
                 qr.thankyou(state, chart_area)
         
-        
-
         
             
            
