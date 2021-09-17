@@ -107,13 +107,34 @@ def start_dashboard(state):
         
         # Premium 
         with st.beta_expander("Premium"):
-            get_signals = st.checkbox("Today's Signals", key = "1232")
-            portfolio = st.checkbox("Portfolio", key = "1232sdcsd")
-            watchlist = st.checkbox("Watchlist", key = "aubd832")
+            get_signals = st.checkbox("Today's Signals", key = "1232")        
             if get_signals:
                 signal_strat = st.radio("Strategy",('None','44-MA','MA Crossover','MACD Crossover','RSI Strategy'))
-                st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+                st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style> <hr>', unsafe_allow_html=True)
             
+            
+            paper_trade = st.checkbox("Paper Trading", key = "uibheui2378")
+            
+            portfolio = st.checkbox("My Portfolios", key = "1232sdcsd")
+            if portfolio:
+                data_ref1 = db.collection("premium_users").document(state.user).collection("pf_name").document("Name")
+                names = data_ref1.get().to_dict()
+                name1 = (names["Portfolio_1"], names["Portfolio_2"], names["Portfolio_3"])
+                
+                port_num = st.radio("Select",(name1))
+                pf_name = port_num
+                
+                if name1.index(port_num) == 0:
+                    port_num = "Portfolio_1"
+                elif name1.index(port_num) == 1:
+                    port_num = "Portfolio_2"
+                else:
+                    port_num = "Portfolio_3"
+                
+                st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style> <hr>', unsafe_allow_html=True)
+                
+                
+            watchlist = st.checkbox("Watchlist", key = "aubd832")
                 
         
         st.markdown("---")
@@ -289,12 +310,41 @@ def start_dashboard(state):
                 qr.thankyou(state, chart_area)
                 
      
+    #Paper Trading
+    if paper_trade:
+        if is_premium(state.user):
+            chart_area.markdown(f'<p> <span style = "font-size:30px; font-weight: bold"> Paper Trading </span><p>',unsafe_allow_html=True)
+            
+            pf.get_portfolio(state.user,db,port_area,"paper_trading")
+        
+        else:
+            if not state.thanks:
+                proceed = qr.go_premium(state, chart_area)          
+        
+                if (state.paid and proceed) or state.trans_page:
+                    state.trans_page = True
+                    upgrade , transID =  qr.confirm_pay(state, chart_area)
+                    
+            
+                if (state.transID != "" and upgrade) or state.thanks :
+                    state.thanks = True       
+                    user_info = db.collection("upgrade").document(state.user)
+                    subs_date = date.today().strftime("%d-%m-%Y")
+                    user_info.set({"PremTransID": transID, "SubsDate": subs_date})  
+                    qr.thankyou(state, chart_area)
+            else:
+                qr.thankyou(state, chart_area)
+    
+    
+    
     #Creating and Storing Portfolio 
     if portfolio :
         if is_premium(state.user):
-            chart_area.markdown('<p> <span style = "font-size:30px; font-weight: bold"> My Portfolio </span><p>',unsafe_allow_html=True)
+            chart_area.markdown(f'<p> <span style = "font-size:30px; font-weight: bold"> {port_num} </span><p>',unsafe_allow_html=True)
+            pf.rename_pf(chart_area,pf_name,port_num,db,state.user)
             #Getting Portfolio
-            pf.get_portfolio(state.user,db,port_area)
+            pf.get_portfolio(state.user,db,port_area,port_num)
+           
         else:
             if not state.thanks:
                 proceed = qr.go_premium(state, chart_area)          

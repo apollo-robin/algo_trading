@@ -23,10 +23,27 @@ def get_current_price(ticker,exchng):
     return curr_price 
 
 
+#Renaming portfolio
+def rename_pf(chart_area,pf_name,port_num,db,username):
+    with chart_area:    
+        col1, col2,col3 = st.beta_columns([4,1,0.2])
+        col1.write("__")
+        col1.markdown(f'<p> <span style = "font-size:30px; font-weight: bold"> {pf_name} </span><p>',unsafe_allow_html=True)
+        name = col2.text_input("Rename")
+        
+    
+    if name != "":
+        data_ref = db.collection("premium_users").document(username).collection("pf_name").document("Name")
+        data_ref.update({port_num: name})
+        
+        
+
+
 #Getting user's portfolio
 #@st.cache(show_spinner=False,suppress_st_warning=True)
-def get_portfolio(username,db,port_area):  
-    data_ref = db.collection("premium_users").document(username)
+def get_portfolio(username,db,port_area,port_num):  
+    #data_ref = db.collection(port_num).document(username)
+    data_ref = db.collection("premium_users").document(username).collection(port_num).document(username)
     data = pd.DataFrame(data_ref.get().to_dict()).transpose().rename_axis('Stock').reset_index() 
     
     curr_value = []
@@ -49,12 +66,14 @@ def get_portfolio(username,db,port_area):
         total_percent = round(total_pnl / total_hold * 100  , 2)
         
         total_df = pd.DataFrame(['-','TOTAL',':',total_hold,total_curr,total_pnl,total_percent]).transpose()
-        total_df.columns = columns = ['Exchange','Stock','Quantity','Hold Value','Current Value','Profit/Loss','% change']
+        total_df.columns= ['Exchange','Stock','Quantity','Hold Value','Current Value','Profit/Loss','% change']
         pf_table = pd.DataFrame(list(zip(data.Exchange, data.Stock, data.Quantity, data.HoldValue, data.CurrentValue, data.Profit_Loss, data.Percent)),
                             columns = ['Exchange','Stock','Quantity','Hold Value','Current Value','Profit/Loss','% change'])
         
         pf_table = pf_table.append(total_df)
         port_area.write(pf_table)
+    else:
+            port_area.markdown('<p><span style = "font-size:20px;"> <center> No stocks added </center></span><p>',unsafe_allow_html=True)
        
     
     st.markdown("---")
@@ -100,7 +119,7 @@ def get_portfolio(username,db,port_area):
                         new_quantity = data.Quantity[list(data.Stock).index(ticker)] - new_quantity
                         hold_value = data.HoldValue[list(data.Stock).index(ticker)] - hold_value
                         
-                         
+            
             data_ref.update({ticker:{"Exchange":exchng,"HoldValue":hold_value, "Quantity":new_quantity}})
             
             if new_quantity == 0:
@@ -109,8 +128,6 @@ def get_portfolio(username,db,port_area):
             
             data = pd.DataFrame(data_ref.get().to_dict()).transpose().rename_axis('Stock').reset_index()
             
-            curr_value = []
-
             curr_value = []
             pnl = []
             percent = []
@@ -125,23 +142,26 @@ def get_portfolio(username,db,port_area):
                 data['Profit_Loss'] = pnl
                 data['Percent'] = percent
            
-            total_hold = sum(data.HoldValue)
-            total_curr = sum(data.CurrentValue)
-            total_pnl = round(total_curr - total_hold,2)
-            total_percent = round(total_pnl / total_hold * 100  , 2)
-            
-            total_df = pd.DataFrame(['-','TOTAL',':',total_hold,total_curr,total_pnl,total_percent]).transpose()
-            total_df.columns = ['Exchange','Stock','Quantity','Hold Value','Current Value','Profit/Loss','% change']
-            pf_table = pd.DataFrame(list(zip(data.Exchange, data.Stock, data.Quantity, data.HoldValue, data.CurrentValue, data.Profit_Loss, data.Percent)),
-                                columns = ['Exchange','Stock','Quantity','Hold Value','Current Value','Profit/Loss','% change'])
-            
-            pf_table = pf_table.append(total_df)
-            port_area.write(pf_table)
+                total_hold = sum(data.HoldValue)
+                total_curr = sum(data.CurrentValue)
+                total_pnl = round(total_curr - total_hold,2)
+                total_percent = round(total_pnl / total_hold * 100  , 2)
+                
+                total_df = pd.DataFrame(['-','TOTAL',':',total_hold,total_curr,total_pnl,total_percent]).transpose()
+                total_df.columns = ['Exchange','Stock','Quantity','Hold Value','Current Value','Profit/Loss','% change']
+                pf_table = pd.DataFrame(list(zip(data.Exchange, data.Stock, data.Quantity, data.HoldValue, data.CurrentValue, data.Profit_Loss, data.Percent)),
+                                    columns = ['Exchange','Stock','Quantity','Hold Value','Current Value','Profit/Loss','% change'])
+                
+                pf_table = pf_table.append(total_df)
+                port_area.write(pf_table)
+            else:
+                port_area.markdown('<p><span style = "font-size:20px;"> <center> No stocks added </center></span><p>',unsafe_allow_html=True)
+
          
     
    
 def get_watchlist(username,db,port_area):
-    data_ref = db.collection("watchlist").document(username)
+    data_ref = db.collection("premium_users").document(username).collection("watchlist").document(username)
     data = pd.DataFrame(data_ref.get().to_dict()).transpose().rename_axis('Stock').reset_index()
     
     curr_price = []  
@@ -155,6 +175,8 @@ def get_watchlist(username,db,port_area):
                                 columns = ['Exchange','Stock','Current Price'])
            
         port_area.write(watch_df)
+    else:
+        port_area.markdown('<p><span style = "font-size:20px;"> <center> No stocks added </center></span><p>',unsafe_allow_html=True)
     
     st.markdown("---")
     
@@ -192,6 +214,8 @@ def get_watchlist(username,db,port_area):
                                     columns = ['Exchange','Stock','Current Price'])
                
             port_area.write(watch_df)
+        else:
+            port_area.markdown('<p><span style = "font-size:20px;"> <center> No stocks added </center></span><p>',unsafe_allow_html=True)
             
     
     
