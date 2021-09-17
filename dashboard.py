@@ -17,7 +17,6 @@ import qr
 from datetime import date
 import login
 import portfolio as pf 
-import premium 
 
 
 def start_dashboard(state):
