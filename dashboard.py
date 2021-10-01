@@ -265,7 +265,7 @@ def start_dashboard(state):
             shares = pd.read_csv('NSE_LIST.csv')
             flag = 0    
             for i in range(1000):
-                Stock = chart.load_stock_data('NSE',shares.Symbol[i], '6mo', '1d')
+                Stock = chart.load_stock_data('NSE',shares.Symbol[i], '3mo', '1d')
                 if signal_strat == "44-MA":
                     buy_df , sigBUY = strat.ma44(Stock)
                     
