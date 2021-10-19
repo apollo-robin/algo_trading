@@ -283,7 +283,8 @@ def start_dashboard(state):
                     
                 if signal_strat != 'None':
                     if len(sigBUY) >= 3:
-                        if math.isnan(sigBUY[-1]) and math.isnan(sigBUY[-2]) and math.isnan(sigBUY[-3]):
+                        #if math.isnan(sigBUY[-1]) and math.isnan(sigBUY[-2]) and math.isnan(sigBUY[-3]):
+                        if math.isnan(sigBUY[-1]):
                             continue
                         else:
                             if flag == 0 and signal_strat != 'None':
