@@ -69,7 +69,7 @@ def start_dashboard(state):
 ), key = "386")
                 
             left , right = st.beta_columns(2)
-            period = left.selectbox("Period",         ('6mo','1d','5d','1mo','3mo','6mo','1y','2y','5y','10y','ytd','max'), key = "2")
+            period = left.selectbox("Period",         ('3mo','1d','5d','1mo','3mo','6mo','1y','2y','5y','10y','ytd','max'), key = "2")
             #Interval for which data is downloaded
             interval = right.selectbox("Interval", ('1d','1m','2m','5m','15m','30m','60m','1d','5d','1wk','1mo','3mo'), key = "3")                          
             #Charting type for share prices
@@ -265,7 +265,7 @@ def start_dashboard(state):
             shares = pd.read_csv('NSE_LIST.csv')
             flag = 0    
             for i in range(1000):
-                Stock = chart.load_stock_data('NSE',shares.Symbol[i], '1y', '1d')
+                Stock = chart.load_stock_data('NSE',shares.Symbol[i], '3mo', '1d')
                 if signal_strat == "44-MA":
                     buy_df , sigBUY = strat.ma44(Stock)
                     
