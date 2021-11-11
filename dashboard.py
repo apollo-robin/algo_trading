@@ -265,7 +265,6 @@ def start_dashboard(state):
             shares = pd.read_csv('NSE_LIST.csv')
             flag = 0    
             for i in range(1000):
-                try:
                     Stock = chart.load_stock_data('NSE',shares.Symbol[i], '3mo', '1d')
                     if signal_strat == "44-MA":
                         buy_df , sigBUY = strat.ma44(Stock)
@@ -292,10 +291,7 @@ def start_dashboard(state):
                                     signals.markdown(f'<p><span style ="font-size:24px"> Your best picks for today ;) </span> ({signal_strat}) <p>', unsafe_allow_html=True)
                                     flag = 1
                                 st.write(shares.Symbol[i] + ' . NSE')
-                                st.write(buy_df.tail(2))
-                except:
-                    continue
-                                    
+                                st.write(buy_df.tail(2))                                  
        
         else:
             if not state.thanks:
