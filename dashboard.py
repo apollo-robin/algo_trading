@@ -265,33 +265,37 @@ def start_dashboard(state):
             shares = pd.read_csv('NSE_LIST.csv')
             flag = 0    
             for i in range(1000):
-                Stock = chart.load_stock_data('NSE',shares.Symbol[i], '3mo', '1d')
-                if signal_strat == "44-MA":
-                    buy_df , sigBUY = strat.ma44(Stock)
-                    
-                if signal_strat == "MA Crossover":
-                    buy_df , sigPriceBuy, sigPriceSell = strat.ma_crossover(Stock)
-                    sigBUY = sigPriceBuy
-                
-                if signal_strat == "MACD Crossover":
-                    buy_df , sigPriceBuy, sigPriceSell = strat.macd_crossover(Stock)
-                    sigBUY = sigPriceBuy
-                    
-                if signal_strat == "RSI Strategy":
-                    buy_df , sigPriceBuy, sigPriceSell = strat.rsi(Stock)
-                    sigBUY = sigPriceBuy
-                    
-                if signal_strat != 'None':
-                    if len(sigBUY) >= 3:
-                        #if math.isnan(sigBUY[-1]) and math.isnan(sigBUY[-2]) and math.isnan(sigBUY[-3]):
-                        if math.isnan(sigBUY[-1]):
-                            continue
-                        else:
-                            if flag == 0 and signal_strat != 'None':
-                                signals.markdown(f'<p><span style ="font-size:24px"> Your best picks for today ;) </span> ({signal_strat}) <p>', unsafe_allow_html=True)
-                                flag = 1
-                            st.write(shares.Symbol[i] + ' . NSE')
-                            st.write(buy_df.tail(2))
+                try:
+                    Stock = chart.load_stock_data('NSE',shares.Symbol[i], '3mo', '1d')
+                    if signal_strat == "44-MA":
+                        buy_df , sigBUY = strat.ma44(Stock)
+
+                    if signal_strat == "MA Crossover":
+                        buy_df , sigPriceBuy, sigPriceSell = strat.ma_crossover(Stock)
+                        sigBUY = sigPriceBuy
+
+                    if signal_strat == "MACD Crossover":
+                        buy_df , sigPriceBuy, sigPriceSell = strat.macd_crossover(Stock)
+                        sigBUY = sigPriceBuy
+
+                    if signal_strat == "RSI Strategy":
+                        buy_df , sigPriceBuy, sigPriceSell = strat.rsi(Stock)
+                        sigBUY = sigPriceBuy
+
+                    if signal_strat != 'None':
+                        if len(sigBUY) >= 3:
+                            #if math.isnan(sigBUY[-1]) and math.isnan(sigBUY[-2]) and math.isnan(sigBUY[-3]):
+                            if math.isnan(sigBUY[-1]):
+                                continue
+                            else:
+                                if flag == 0 and signal_strat != 'None':
+                                    signals.markdown(f'<p><span style ="font-size:24px"> Your best picks for today ;) </span> ({signal_strat}) <p>', unsafe_allow_html=True)
+                                    flag = 1
+                                st.write(shares.Symbol[i] + ' . NSE')
+                                st.write(buy_df.tail(2))
+                except:
+                    continue
+                                    
        
         else:
             if not state.thanks:
