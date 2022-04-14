@@ -270,6 +270,7 @@ def start_dashboard(state):
                         buy_df , sigBUY = strat.ma44(Stock)
 
                     if signal_strat == "MA Crossover":
+                        Stock = chart.load_stock_data('NSE',shares.Symbol[i], '1y', '1d')
                         buy_df , sigPriceBuy, sigPriceSell = strat.ma_crossover(Stock)
                         sigBUY = sigPriceBuy
 
